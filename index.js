@@ -5,7 +5,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 let user = [];
 let tweets = [];
 
@@ -13,9 +12,9 @@ app.post('/sign-up', (req, res) => {
     const {username, avatar} = req.body;
     if(username && avatar) {
         user.push({ username: username, avatar: avatar});
-        res.send("OK");  
+        res.status(201).send("OK");  
     } else {
-        res.send("todos os campos sao obrigatorios!")
+        res.sendStatus(400).send("todos os campos sao obrigatorios!")
     }
     console.log(user);
 });
@@ -25,9 +24,9 @@ app.post('/tweets', (req, res) => {
     if(username && tweet) {
         let userAvatar = user.find(user => user.username === username)
         tweets.push({ username: username, tweet: tweet, avatar: userAvatar.avatar});
-        res.send("OK");  
+        res.status(201).send("OK");  
     } else {
-        res.send("todos os campos sao obrigatorios!")
+        res.sendStatus(400).send("todos os campos sao obrigatorios!")
     }
     console.log(tweets);
 });
@@ -36,6 +35,16 @@ app.get('/tweets', (req, res) => {
     res.send(tweets.slice(tweets.length-10, tweets.length));
 });
 
+app.get('/tweets/:username', (req, res) => {
+
+    function filterUserTweets(tweets){
+        const name = req.params.username;
+        return tweets.username === name;
+    }
+
+    const nameTweets = tweets.filter(filterUserTweets)
+    res.send(nameTweets)
+});
 
 app.listen(5000, ()=> {
     console.log("Back-end funcionando, nao esquece de desligar a cada atualizaçao")
@@ -43,6 +52,10 @@ app.listen(5000, ()=> {
 
 
 /* TEST OBJECTS
+let user = [];
+let tweets = [];
+
+
 let user = [
     {
         "username": "carinha",
@@ -62,7 +75,7 @@ let tweets = [
     },
     {
         "username": "carinha",
-        "tweet": "1"
+        "tweet": "1",
         "avatar": "aquele avatar"
     },
     {
@@ -72,7 +85,7 @@ let tweets = [
     },
     {
         "username": "carinha",
-        "tweet": "3"
+        "tweet": "3",
         "avatar": "aquele avatar"
     },
     {
@@ -82,7 +95,7 @@ let tweets = [
     },
     {
         "username": "carinha",
-        "tweet": "5"
+        "tweet": "5",
         "avatar": "aquele avatar"
     },
     {
@@ -92,7 +105,7 @@ let tweets = [
     },
     {
         "username": "carinha",
-        "tweet": "7"
+        "tweet": "7",
         "avatar": "aquele avatar"
     },
     {
@@ -102,7 +115,7 @@ let tweets = [
     },
     {
         "username": "carinha",
-        "tweet": "9"
+        "tweet": "9",
         "avatar": "aquele avatar"
     },
     {
